@@ -47,7 +47,7 @@ public class LyricsCrawler {
 		}
 
 		String sURL = "https://orion.apiseeds.com/api/music/lyric/" + encodedArtist + "/" + encodedTitle
-				+ "?apikey=6CLzMHmRi8DbrpqGwuju8IJ1wkGZRbxrLgufXrIvR3CTBBtABqz90XddqwKTFyxH";
+				+ "?apikey=xkJ7v4XAdP4Gzjjih2L27GHKfwXYCsgoEeDK0W6s3gf7AQqDuojzPPaWC4RpF8kN";
 
 		InputStream contentInputStream = null;
 
@@ -68,10 +68,12 @@ public class LyricsCrawler {
 					sb.append(line);
 					line = br.readLine();
 				}
+				
+				String lyricString = sb.toString().replace("\n", "");
 
 				EntityUtils.consume(httpEntity);
 
-				LyricsApiResponse jsonResponse = gson.fromJson(sb.toString(), LyricsApiResponse.class);
+				LyricsApiResponse jsonResponse = gson.fromJson(lyricString, LyricsApiResponse.class);
 
 				if (jsonResponse != null && jsonResponse.getResult() != null
 						&& jsonResponse.getResult().getTrack() != null
