@@ -51,47 +51,43 @@ public class LyricsCrawler {
 
 		InputStream contentInputStream = null;
 
-		if (true) {
-			HttpGet httpGet = new HttpGet(sURL);
-			try (CloseableHttpClient httpclient = HttpClients.createDefault();
-					CloseableHttpResponse httpResponse = httpclient.execute(httpGet)) {
-				HttpEntity httpEntity = httpResponse.getEntity();
+		HttpGet httpGet = new HttpGet(sURL);
+		try (CloseableHttpClient httpclient = HttpClients.createDefault();
+				CloseableHttpResponse httpResponse = httpclient.execute(httpGet)) {
+			HttpEntity httpEntity = httpResponse.getEntity();
 
-				contentInputStream = httpEntity.getContent();
+			contentInputStream = httpEntity.getContent();
 
-				StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 
-				BufferedReader br = new BufferedReader(new InputStreamReader(contentInputStream));
+			BufferedReader br = new BufferedReader(new InputStreamReader(contentInputStream));
 
-				String line = br.readLine();
-				while (line != null) {
-					sb.append(line);
-					line = br.readLine();
-				}
-				
-				// Remove line breaks from lyric text
-				String lyricString = sb.toString().replace("\n", " ");
-
-				EntityUtils.consume(httpEntity);
-
-				LyricsApiResponse jsonResponse = gson.fromJson(lyricString, LyricsApiResponse.class);
-
-				if (jsonResponse != null && jsonResponse.getResult() != null
-						&& jsonResponse.getResult().getTrack() != null
-						&& jsonResponse.getResult().getTrack().getText() != null) {
-					song.setLyrics(jsonResponse.getResult().getTrack().getText());
-					logger.debug("Settings lyrics for {} - {}", song.getArtist(), song.getTitle());
-				} else {
-					logger.warn("Unable to set lyrics for {} - {}", song.getArtist(), song.getTitle());
-				}
-
-			} catch (ClientProtocolException e) {
-				logger.error("ClientProtocolException", e);
-			} catch (IOException e) {
-				logger.error("IOException", e);
+			String line = br.readLine();
+			while (line != null) {
+				sb.append(line);
+				line = br.readLine();
 			}
-		}
 
+			// Remove line breaks from lyric text
+			String lyricString = sb.toString().replace("\n", " ");
+
+			EntityUtils.consume(httpEntity);
+
+			LyricsApiResponse jsonResponse = gson.fromJson(lyricString, LyricsApiResponse.class);
+
+			if (jsonResponse != null && jsonResponse.getResult() != null && jsonResponse.getResult().getTrack() != null
+					&& jsonResponse.getResult().getTrack().getText() != null) {
+				song.setLyrics(jsonResponse.getResult().getTrack().getText());
+				logger.debug("Settings lyrics for {} - {}", song.getArtist(), song.getTitle());
+			} else {
+				logger.warn("Unable to set lyrics for {} - {}", song.getArtist(), song.getTitle());
+			}
+
+		} catch (ClientProtocolException e) {
+			logger.error("ClientProtocolException", e);
+		} catch (IOException e) {
+			logger.error("IOException", e);
+		}
 	}
 
 }
