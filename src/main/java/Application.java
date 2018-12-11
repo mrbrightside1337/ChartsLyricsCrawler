@@ -1,15 +1,14 @@
-import java.io.FileWriter;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import crawler.ChartCrawler;
 import crawler.LyricsCrawler;
+import export.CSVExporter;
+import export.Exporter;
 import model.Song;
 
 public class Application {
@@ -18,24 +17,21 @@ public class Application {
 
 	public static void main(String[] args) {
 
+		logger.info("Application started...");
+
 		List<Song> allSongs = ChartCrawler.crawl(2017, 2017);
+
+		logger.info("Crawled {} songs", allSongs.size());
 
 		allSongs.forEach(LyricsCrawler::populateLyrics);
 
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.disableHtmlEscaping();
-		Gson gson = gsonBuilder.create();
+		Path targetFile = Paths.get("target/target.csv");
 
-		String finalJson = gson.toJson(allSongs);
+		Exporter exporter = new CSVExporter();
+		exporter.export(allSongs, targetFile);
 
-		try (FileWriter fw = new FileWriter("target.json")) {
-			fw.write(finalJson);
-			fw.flush();
-		} catch (IOException e) {
-			logger.error("IOException", e);
-		}
+		logger.info("Crawling finished.");
 
-		logger.info("Crawled {} songs", allSongs.size());
 	}
 
 }
