@@ -14,5 +14,6 @@ The LyricsCrawler is not really a crawler. The LyricsCrawler populates the exist
 
 # TODO
 
+* Add export to CSV
 * Improve error handling if lyrics cannot be retrieved by the lyrics API.
 * Crawled artists who have a _featuring_ in the name are not working very well with the lyrics API, i.e. _The Chainsmokers featuring Coldplay - Something just like this_. But lyrics can be retrieved with either _The Chainsmokers_ OR _Coldplay_ as an artist...
