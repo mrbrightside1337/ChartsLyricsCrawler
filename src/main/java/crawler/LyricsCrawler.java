@@ -69,7 +69,8 @@ public class LyricsCrawler {
 					line = br.readLine();
 				}
 				
-				String lyricString = sb.toString().replace("\n", "");
+				// Remove line breaks from lyric text
+				String lyricString = sb.toString().replace("\n", " ");
 
 				EntityUtils.consume(httpEntity);
 
