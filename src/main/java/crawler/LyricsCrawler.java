@@ -27,6 +27,8 @@ public class LyricsCrawler {
 
 	private static final Logger logger = LoggerFactory.getLogger(LyricsCrawler.class);
 
+	private static final String API_KEY = "xkJ7v4XAdP4Gzjjih2L27GHKfwXYCsgoEeDK0W6s3gf7AQqDuojzPPaWC4RpF8kN";
+
 	private LyricsCrawler() {
 	}
 
@@ -34,29 +36,107 @@ public class LyricsCrawler {
 
 		logger.debug("Getting lyrics for {} - {}", song.getArtist(), song.getTitle());
 
-		Gson gson = new Gson();
-
-		String encodedArtist = null;
-		String encodedTitle = null;
 		try {
-			encodedArtist = URLEncoder.encode(song.getArtist(), StandardCharsets.UTF_8.displayName());
-			encodedTitle = URLEncoder.encode(song.getTitle(), StandardCharsets.UTF_8.displayName());
-		} catch (UnsupportedEncodingException e) {
-			logger.error("UnsupportedEncodingException", e);
-			return;
+
+			String responseJSON = requestLyrics(song);
+			setRequestedLyrics(song, responseJSON);
+
+		} catch (UnsupportedEncodingException | CrawlingException e) {
+			logger.warn("Lyrics for {} - {} haven't been set.", song.getArtist(), song.getTitle(), e);
 		}
 
-		String sURL = "https://orion.apiseeds.com/api/music/lyric/" + encodedArtist + "/" + encodedTitle
-				+ "?apikey=xkJ7v4XAdP4Gzjjih2L27GHKfwXYCsgoEeDK0W6s3gf7AQqDuojzPPaWC4RpF8kN";
+	}
 
-		InputStream contentInputStream = null;
+	/**
+	 * Builds the request URL for the lyrics api request. The most important thing
+	 * that this method does is to encode the title and the artist of the song with
+	 * UTF-8.
+	 * 
+	 * @param song
+	 * @return RequestURL with encoded title and artist
+	 * @throws UnsupportedEncodingException
+	 */
+	private static String buildRequestURL(Song song) throws UnsupportedEncodingException {
 
-		HttpGet httpGet = new HttpGet(sURL);
+		String filteredArtist = filterArtistString(song.getArtist());
+
+		String encodedArtist = URLEncoder.encode(filteredArtist, StandardCharsets.UTF_8.displayName());
+		String encodedTitle = URLEncoder.encode(song.getTitle(), StandardCharsets.UTF_8.displayName());
+
+		return "https://orion.apiseeds.com/api/music/lyric/" + encodedArtist + "/" + encodedTitle + "?apikey="
+				+ API_KEY;
+	}
+
+	/**
+	 * Filters the artist string. If there is an ampersand or the substring
+	 * "Featuring" the following chars are cut out.
+	 * 
+	 * @param artist
+	 * @return filtered artist
+	 */
+	private static String filterArtistString(String artist) {
+
+		if (artist.contains("Featuring")) {
+			return artist.substring(0, artist.indexOf("Featuring"));
+		}
+		if (artist.contains("&")) {
+			return artist.substring(0, artist.indexOf('&'));
+		}
+
+		return artist;
+
+	}
+
+	/**
+	 * 
+	 * @param song
+	 * @param responseJSON
+	 */
+	private static void setRequestedLyrics(Song song, String responseJSON) {
+		Gson gson = new Gson();
+
+		LyricsApiResponse lyricsApiResponse = gson.fromJson(responseJSON, LyricsApiResponse.class);
+
+		if (lyricsApiResponse != null && lyricsApiResponse.getResult() != null
+				&& lyricsApiResponse.getResult().getTrack() != null
+				&& lyricsApiResponse.getResult().getTrack().getText() != null) {
+			song.setLyrics(lyricsApiResponse.getResult().getTrack().getText());
+			logger.debug("Settings lyrics for {} - {}", song.getArtist(), song.getTitle());
+		} else {
+			logger.warn("Unable to set lyrics for {} - {}", song.getArtist(), song.getTitle());
+		}
+
+	}
+
+	/**
+	 * Requests the lyrics for the given song.
+	 * 
+	 * @param song
+	 * @return String with the response as a JSON.
+	 * @throws Exception
+	 * @throws UnsupportedEncodingException if artist or title of the song contain
+	 *                                      unsupported characters to be encoded
+	 *                                      with UTF-8
+	 * @throws CrawlingException
+	 */
+	private static String requestLyrics(Song song) throws UnsupportedEncodingException, CrawlingException {
+
+		String responseJSON = null;
+
+		String requestURL = buildRequestURL(song);
+
+		HttpGet httpGet = new HttpGet(requestURL);
 		try (CloseableHttpClient httpclient = HttpClients.createDefault();
 				CloseableHttpResponse httpResponse = httpclient.execute(httpGet)) {
+
+			if (httpResponse.getStatusLine().getStatusCode() >= 300) {
+				logger.warn("Status is {}", httpResponse.getStatusLine().getStatusCode());
+				throw new CrawlingException("Request was unsuccessful.");
+			}
+
 			HttpEntity httpEntity = httpResponse.getEntity();
 
-			contentInputStream = httpEntity.getContent();
+			InputStream contentInputStream = httpEntity.getContent();
 
 			StringBuilder sb = new StringBuilder();
 
@@ -68,26 +148,20 @@ public class LyricsCrawler {
 				line = br.readLine();
 			}
 
-			// Remove line breaks from lyric text
-			String lyricString = sb.toString().replace("\n", " ");
-
 			EntityUtils.consume(httpEntity);
 
-			LyricsApiResponse jsonResponse = gson.fromJson(lyricString, LyricsApiResponse.class);
+			// Remove line breaks from lyric text
+			responseJSON = sb.toString().replace("\n", " ");
 
-			if (jsonResponse != null && jsonResponse.getResult() != null && jsonResponse.getResult().getTrack() != null
-					&& jsonResponse.getResult().getTrack().getText() != null) {
-				song.setLyrics(jsonResponse.getResult().getTrack().getText());
-				logger.debug("Settings lyrics for {} - {}", song.getArtist(), song.getTitle());
-			} else {
-				logger.warn("Unable to set lyrics for {} - {}", song.getArtist(), song.getTitle());
-			}
+			return responseJSON;
 
 		} catch (ClientProtocolException e) {
 			logger.error("ClientProtocolException", e);
 		} catch (IOException e) {
 			logger.error("IOException", e);
 		}
+
+		return responseJSON;
 	}
 
 }
