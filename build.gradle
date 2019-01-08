@@ -16,6 +16,10 @@ repositories {
     jcenter()
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     // Use JUnit test framework
     testCompile('org.junit.jupiter:junit-jupiter-api:5.3.2')
@@ -26,7 +30,7 @@ dependencies {
     
     implementation 'com.google.code.gson:gson:2.8.5'
     
-    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     
     compile 'org.apache.httpcomponents:httpclient:4.5.6'
     
