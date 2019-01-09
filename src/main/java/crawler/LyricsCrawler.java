@@ -95,7 +95,13 @@ public class LyricsCrawler {
 	private static void setRequestedLyrics(Song song, String responseJSON) {
 		Gson gson = new Gson();
 
-		LyricsApiResponse lyricsApiResponse = gson.fromJson(responseJSON, LyricsApiResponse.class);
+		LyricsApiResponse lyricsApiResponse = null;
+
+		try {
+			lyricsApiResponse = gson.fromJson(responseJSON, LyricsApiResponse.class);
+		} catch (Exception e) {
+			logger.error("Exception: {}", e.getMessage(), e);
+		}
 
 		if (lyricsApiResponse != null && lyricsApiResponse.getResult() != null
 				&& lyricsApiResponse.getResult().getTrack() != null
