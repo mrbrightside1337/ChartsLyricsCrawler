@@ -1,4 +1,4 @@
-package export;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
 
 public class JSONExporter implements Exporter {
 

@@ -1,4 +1,4 @@
-package export;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,4 +1,4 @@
-package export;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
 
 public class CSVExporter implements Exporter {
 

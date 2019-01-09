@@ -1,4 +1,4 @@
-package model;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model;
 
 public class Song {
 

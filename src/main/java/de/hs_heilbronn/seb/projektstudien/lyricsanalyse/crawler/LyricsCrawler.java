@@ -1,4 +1,4 @@
-package crawler;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.crawler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import lyricsApiModel.LyricsApiResponse;
-import model.Song;
-import util.ConfigReader;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.lyricsApiModel.LyricsApiResponse;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.util.ConfigReader;
 
 public class LyricsCrawler {
 

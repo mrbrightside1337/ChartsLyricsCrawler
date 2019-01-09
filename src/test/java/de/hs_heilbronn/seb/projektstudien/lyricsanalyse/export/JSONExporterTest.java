@@ -1,4 +1,4 @@
-package export;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
 
 class JSONExporterTest {
 

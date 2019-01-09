@@ -1,11 +1,11 @@
-package crawler;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.crawler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
 
 class LyricsCrawlerTest {
 

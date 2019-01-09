@@ -1,4 +1,4 @@
-package lyricsApiModel;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.lyricsApiModel;
 
 public class LyricsApiResponse {
 

@@ -1,4 +1,4 @@
-package crawler;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.crawler;
 
 public class CrawlingException extends Exception {
 

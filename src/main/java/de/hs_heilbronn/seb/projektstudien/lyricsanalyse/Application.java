@@ -1,3 +1,5 @@
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -5,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import crawler.ChartCrawler;
-import crawler.LyricsCrawler;
-import export.CSVExporter;
-import export.Exporter;
-import model.Song;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.crawler.ChartCrawler;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.crawler.LyricsCrawler;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export.CSVExporter;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.export.Exporter;
+import de.hs_heilbronn.seb.projektstudien.lyricsanalyse.model.Song;
 
 public class Application {
 

@@ -1,4 +1,4 @@
-package util;
+package de.hs_heilbronn.seb.projektstudien.lyricsanalyse.util;
 
 import java.io.IOException;
 import java.io.InputStream;
