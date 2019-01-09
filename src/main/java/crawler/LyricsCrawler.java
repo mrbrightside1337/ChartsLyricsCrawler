@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -22,17 +23,29 @@ import com.google.gson.Gson;
 
 import lyricsApiModel.LyricsApiResponse;
 import model.Song;
+import util.ConfigReader;
 
 public class LyricsCrawler {
 
 	private static final Logger logger = LoggerFactory.getLogger(LyricsCrawler.class);
 
-	private static final String API_KEY = "xkJ7v4XAdP4Gzjjih2L27GHKfwXYCsgoEeDK0W6s3gf7AQqDuojzPPaWC4RpF8kN";
+	private String apiKey;
 
-	private LyricsCrawler() {
+	private static final String PROPERTY_KEY_API_KEY = "api.key.apiseeds.lyrics";
+
+	public LyricsCrawler() {
+		ConfigReader configReader = new ConfigReader();
+		Optional<String> apiKeyOptinal = configReader.getStringValue(PROPERTY_KEY_API_KEY);
+		if (apiKeyOptinal.isPresent()) {
+			apiKey = apiKeyOptinal.get();
+		} else {
+			logger.error("Api key for lyrics crawler is not specified.");
+			throw new IllegalStateException("Api key for lyrics crawler is not specified.");
+		}
+
 	}
 
-	public static void populateLyrics(Song song) {
+	public void populateLyrics(Song song) {
 
 		logger.debug("Getting lyrics for {} - {}", song.getArtist(), song.getTitle());
 
@@ -56,15 +69,14 @@ public class LyricsCrawler {
 	 * @return RequestURL with encoded title and artist
 	 * @throws UnsupportedEncodingException
 	 */
-	private static String buildRequestURL(Song song) throws UnsupportedEncodingException {
+	private String buildRequestURL(Song song) throws UnsupportedEncodingException {
 
 		String filteredArtist = filterArtistString(song.getArtist());
 
 		String encodedArtist = URLEncoder.encode(filteredArtist, StandardCharsets.UTF_8.displayName());
 		String encodedTitle = URLEncoder.encode(song.getTitle(), StandardCharsets.UTF_8.displayName());
 
-		return "https://orion.apiseeds.com/api/music/lyric/" + encodedArtist + "/" + encodedTitle + "?apikey="
-				+ API_KEY;
+		return "https://orion.apiseeds.com/api/music/lyric/" + encodedArtist + "/" + encodedTitle + "?apikey=" + apiKey;
 	}
 
 	/**
@@ -125,7 +137,7 @@ public class LyricsCrawler {
 	 *                                      with UTF-8
 	 * @throws CrawlingException
 	 */
-	private static String requestLyrics(Song song) throws UnsupportedEncodingException, CrawlingException {
+	private String requestLyrics(Song song) throws UnsupportedEncodingException, CrawlingException {
 
 		String responseJSON = null;
 

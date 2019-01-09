@@ -12,6 +12,11 @@ The ChartCrawler crawls all the billboard top 100 end-year charts of the years w
 
 The LyricsCrawler is not really a crawler. The LyricsCrawler populates the existing song objects with the lyrics data that are requested from the apiseeds lyrics api.
 
+# Setup
+You have to specify your apiseeds lyrics API key in `configuration.properties`
+
+`api.key.apiseeds.lyrics=<your api key>`
+
 # TODO
 * Improve crawling performance by
 	* use multiple threads for the requests

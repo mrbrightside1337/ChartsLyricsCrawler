@@ -19,11 +19,13 @@ public class Application {
 
 		logger.info("Application started...");
 
+		LyricsCrawler lyricsCrawler = new LyricsCrawler();
+
 		List<Song> allSongs = ChartCrawler.crawl(2017, 2017);
 
 		logger.info("Crawled {} songs", allSongs.size());
 
-		allSongs.forEach(LyricsCrawler::populateLyrics);
+		allSongs.forEach(lyricsCrawler::populateLyrics);
 
 		Path targetFile = Paths.get("target/target.csv");
 
